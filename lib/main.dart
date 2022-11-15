@@ -3,7 +3,7 @@ import 'screens/signup.dart';
 import 'screens/signin.dart';
 import 'theme/theme.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'screens/verification.dart';
+import 'screens/pdf_page.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -23,8 +23,7 @@ class LetsChat extends StatelessWidget {
       routes: {
         SignIn.id: (context) => const SignIn(), // Login Page
         SignUp.id: (context) => const SignUp(), // The SignUp page
-        Verification.id: (context) => const Verification(),
-
+        PdfPage.id: (context) => PdfPage(),
       },
     );
   }

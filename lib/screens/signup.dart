@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:invoice/screens/pdf_page.dart';
 import 'package:invoice/screens/signin.dart';
-import 'package:invoice/screens/verification.dart';
 import '../components/custom_button.dart';
 import '../components/custom_input.dart';
 import '../components/navigator.dart';
@@ -21,21 +21,9 @@ class _SignUpState extends State<SignUp> {
   final TextEditingController _name = TextEditingController(),
       _email = TextEditingController(),
       _password = TextEditingController(),
-      _confirmPassword = TextEditingController(),
-      _phone = TextEditingController();
+      _confirmPassword = TextEditingController();
   final auth = FirebaseAuth.instance;
   bool _loading = false;
-  void phoneAuth() async {
-    await FirebaseAuth.instance.verifyPhoneNumber(
-      phoneNumber: "+966${_phone.text}".trim(),
-      verificationCompleted: (PhoneAuthCredential credential) {},
-      verificationFailed: (FirebaseAuthException e) {},
-      codeSent: (String verificationId, int? resendToken) {
-        Navigator.of(context).pushReplacementNamed('/phoneverify');
-      },
-      codeAutoRetrievalTimeout: (String verificationId) {},
-    );
-  }
 
   Future<void> _submit() async {
     setState(() => _submitted = true);
@@ -46,7 +34,7 @@ class _SignUpState extends State<SignUp> {
         var user = await auth.createUserWithEmailAndPassword(
             email: _email.text, password: _password.text);
         setState(() => _loading = false);
-        Navigator.pushNamed(context, Verification.id);
+        Navigator.pushNamed(context, PdfPage.id);
       } catch (e) {
         setState(() => _loading = false);
         final snackBar = SnackBar(

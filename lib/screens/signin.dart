@@ -6,7 +6,7 @@ import '../components/navigator.dart';
 import '../controllers/validators.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
-import 'package:invoice/screens/verification.dart';
+import 'package:invoice/screens/pdf_page.dart';
 
 class SignIn extends StatefulWidget {
   static const String id = "Sign_in";
@@ -19,34 +19,21 @@ class _SignInState extends State<SignIn> {
   final _formKey = GlobalKey<FormState>();
   bool _submitted = false;
   final TextEditingController _email = TextEditingController(),
-      _password = TextEditingController(),
-      _phone = TextEditingController();
+      _password = TextEditingController();
   final auth = FirebaseAuth.instance;
   bool _loading = false;
-
-  void phoneAuth() async {
-    await FirebaseAuth.instance.verifyPhoneNumber(
-      phoneNumber: "+966${_phone.text}".trim(),
-      verificationCompleted: (PhoneAuthCredential credential) {},
-      verificationFailed: (FirebaseAuthException e) {},
-      codeSent: (String verificationId, int? resendToken) {
-        Navigator.of(context).pushReplacementNamed('/phoneverify');
-      },
-      codeAutoRetrievalTimeout: (String verificationId) {},
-    );
-  }
 
   Future<void> _submit() async {
     setState(() => _submitted = true);
     if (_formKey.currentState!.validate()) {
       setState(() => _loading = true);
       print('valid input');
-      phoneAuth();
+
       try {
         var user = await auth.signInWithEmailAndPassword(
             email: _email.text, password: _password.text);
         setState(() => _loading = false);
-        Navigator.pushNamed(context, Verification.id);
+        Navigator.pushNamed(context, PdfPage.id);
         print('signed in successfully');
       } catch (e) {
         setState(() => _loading = false);
@@ -91,50 +78,8 @@ class _SignInState extends State<SignIn> {
                           hint: 'Enter your password',
                           isPassword: true,
                           validation: valPass),
-                      Text('or'),
                       SizedBox(
                         height: 10,
-                      ),
-                      Container(
-                        height: 55,
-                        decoration: BoxDecoration(
-                            border: Border.all(width: 1, color: Colors.grey),
-                            borderRadius: BorderRadius.circular(10)),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            SizedBox(
-                              width: 10,
-                            ),
-                            SizedBox(
-                              width: 40,
-                              child: TextField(
-                                controller: TextEditingController(text: '+966'),
-                                keyboardType: TextInputType.number,
-                                decoration: InputDecoration(
-                                  border: InputBorder.none,
-                                ),
-                              ),
-                            ),
-                            Text(
-                              "|",
-                              style:
-                                  TextStyle(fontSize: 33, color: Colors.grey),
-                            ),
-                            SizedBox(
-                              width: 10,
-                            ),
-                            Expanded(
-                                child: TextField(
-                              controller: _phone,
-                              keyboardType: TextInputType.phone,
-                              decoration: InputDecoration(
-                                border: InputBorder.none,
-                                hintText: "Phone",
-                              ),
-                            ))
-                          ],
-                        ),
                       ),
                       SizedBox(
                         height: 12,
