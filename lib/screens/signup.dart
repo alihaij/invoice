@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:invoice/screens/pdf_page.dart';
 import 'package:invoice/screens/signin.dart';
@@ -31,8 +32,12 @@ class _SignUpState extends State<SignUp> {
       setState(() => _loading = true);
       print('valid input');
       try {
+        FirebaseFirestore.instance
+            .collection('user')
+            .add(({'username': _name.text, 'email': _email.text}));
         var user = await auth.createUserWithEmailAndPassword(
             email: _email.text, password: _password.text);
+
         setState(() => _loading = false);
         Navigator.pushNamed(context, PdfPage.id);
       } catch (e) {

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../api/pdf_api.dart';
 import '../api/pdf_invoice_api.dart';
 import '../main.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../model/customer.dart';
 import '../model/invoice.dart';
 import '../model/supplier.dart';
@@ -15,6 +16,7 @@ class PdfPage extends StatefulWidget {
 }
 
 class _PdfPageState extends State<PdfPage> {
+  final user = FirebaseAuth.instance.currentUser!;
   @override
   Widget build(BuildContext context) => Scaffold(
         backgroundColor: Colors.black,
@@ -41,7 +43,7 @@ class _PdfPageState extends State<PdfPage> {
 
                     final invoice = Invoice(
                       supplier: Supplier(
-                        name: 'Sarah Field',
+                        name: user.email.toString(),
                         address: 'Sarah Street 9, Beijing, China',
                         paymentInfo: 'https://paypal.me/sarahfieldzz',
                       ),
