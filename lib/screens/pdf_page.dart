@@ -39,7 +39,7 @@ class _PdfPageState extends State<PdfPage> {
                   text: 'Invoice PDF',
                   onClicked: () async {
                     final date = DateTime.now();
-                    final dueDate = date.add(Duration(days: 7));
+                  
 
                     final invoice = Invoice(
                       supplier: Supplier(
@@ -53,9 +53,11 @@ class _PdfPageState extends State<PdfPage> {
                       ),
                       info: InvoiceInfo(
                         date: date,
-                        dueDate: dueDate,
+                        totalPrice: 0,
+                        vatAmmount: 0,
+                        vatRate: 0,
                         description: 'My description...',
-                        number: '${DateTime.now().year}-9999',
+                        serialNumber: '${DateTime.now().millisecondsSinceEpoch}',
                       ),
                       items: [
                         InvoiceItem(
@@ -113,6 +115,8 @@ class _PdfPageState extends State<PdfPage> {
                     final pdfFile = await PdfInvoiceApi.generate(invoice);
 
                     PdfApi.openFile(pdfFile);
+                    PdfApi.uploadFile(pdfFile.path.split('/').last, pdfFile);
+                    
                   },
                 ),
               ],

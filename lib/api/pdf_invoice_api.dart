@@ -24,7 +24,8 @@ class PdfInvoiceApi {
       footer: (context) => buildFooter(invoice),
     ));
 
-    return PdfApi.saveDocument(name: 'my_invoice.pdf', pdf: pdf);
+    return PdfApi.saveDocument(
+        name: '${DateTime.now().microsecondsSinceEpoch}.pdf', pdf: pdf);
   }
 
   static Widget buildHeader(Invoice invoice) => Column(
@@ -40,7 +41,7 @@ class PdfInvoiceApi {
                 width: 50,
                 child: BarcodeWidget(
                   barcode: Barcode.qrCode(),
-                  data: invoice.info.number,
+                  data: invoice.info.serialNumber,
                 ),
               ),
             ],
@@ -66,18 +67,18 @@ class PdfInvoiceApi {
       );
 
   static Widget buildInvoiceInfo(InvoiceInfo info) {
-    final paymentTerms = '${info.dueDate.difference(info.date).inDays} days';
+    // final paymentTerms = '${info.date.difference(info.date).inDays} days';
     final titles = <String>[
       'Invoice Number:',
       'Invoice Date:',
-      'Payment Terms:',
-      'Due Date:'
+      // 'Payment Terms:',
+      // 'Due Date:'
     ];
     final data = <String>[
-      info.number,
+      info.serialNumber,
       Utils.formatDate(info.date),
-      paymentTerms,
-      Utils.formatDate(info.dueDate),
+      // paymentTerms,
+      // Utils.formatDate(info.date),
     ];
 
     return Column(

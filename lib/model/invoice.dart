@@ -17,15 +17,19 @@ class Invoice {
 
 class InvoiceInfo {
   final String description;
-  final String number;
   final DateTime date;
-  final DateTime dueDate;
+  final String serialNumber;
+  final double totalPrice;
+  final double vatRate;
+  final double vatAmmount;
 
   const InvoiceInfo({
+    required this.serialNumber,
+    required this.totalPrice,
+    required this.vatRate,
+    required this.vatAmmount,
     required this.description,
-    required this.number,
     required this.date,
-    required this.dueDate,
   });
 }
 

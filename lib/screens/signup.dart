@@ -32,11 +32,11 @@ class _SignUpState extends State<SignUp> {
       setState(() => _loading = true);
       print('valid input');
       try {
-        FirebaseFirestore.instance
-            .collection('user')
-            .add(({'username': _name.text, 'email': _email.text}));
         var user = await auth.createUserWithEmailAndPassword(
             email: _email.text, password: _password.text);
+        FirebaseFirestore.instance
+            .collection('users')
+            .add(({'fullname': _name.text, 'email': _email.text}));
 
         setState(() => _loading = false);
         Navigator.pushNamed(context, PdfPage.id);
