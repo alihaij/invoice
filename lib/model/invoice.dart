@@ -1,10 +1,10 @@
-import '../model/customer.dart';
-import '../model/supplier.dart';
+import '../model/buyer.dart';
+import '../model/seller.dart';
 
 class Invoice {
   final InvoiceInfo info;
-  final Supplier supplier;
-  final Customer customer;
+  final Seller supplier;
+  final Buyer customer;
   final List<InvoiceItem> items;
 
   const Invoice({
@@ -42,16 +42,11 @@ class InvoiceItem {
   final String description;
   final double unitPrice;
   final int quantity;
-  final double TotalExcludingVAT;
-  final double vat;
-  final double vatAmount;
+  final double vat = 0.15;
 
   const InvoiceItem({
     required this.description,
     required this.unitPrice,
     required this.quantity,
-    required this.TotalExcludingVAT,
-    required this.vat,
-    required this.vatAmount,
   });
 }

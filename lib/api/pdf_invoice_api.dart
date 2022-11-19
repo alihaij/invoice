@@ -3,9 +3,9 @@ import 'dart:io';
 import 'package:printing/printing.dart';
 
 import '../api/pdf_api.dart';
-import '../model/customer.dart';
+import '../model/buyer.dart';
 import '../model/invoice.dart';
-import '../model/supplier.dart';
+import '../model/seller.dart';
 import '../utils.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -17,7 +17,6 @@ class PdfInvoiceApi {
         await networkImage('https://derwaza.tech/imgs/derwaza-logo.png');
 
     final pdf = Document();
-    print('omk${invoice.info.toString()}');
 
     pdf.addPage(MultiPage(
       build: (context) => [
@@ -70,7 +69,7 @@ class PdfInvoiceApi {
         ],
       );
 
-  static Widget buildCustomerAddress(Customer customer) => Column(
+  static Widget buildCustomerAddress(Buyer customer) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(customer.name, style: TextStyle(fontWeight: FontWeight.bold)),
@@ -106,7 +105,7 @@ class PdfInvoiceApi {
   //   return Container(child: pw.Image(netImage));
   // }
 
-  static Widget buildSupplierAddress(Supplier supplier) => Column(
+  static Widget buildSupplierAddress(Seller supplier) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // pw.Image(pw.MemoryImage(
@@ -115,6 +114,7 @@ class PdfInvoiceApi {
           Text(supplier.name, style: TextStyle(fontWeight: FontWeight.bold)),
           SizedBox(height: 1 * PdfPageFormat.mm),
           Text(supplier.address),
+          Text(supplier.vatRegistrationNum),
         ],
       );
 
@@ -142,16 +142,18 @@ class PdfInvoiceApi {
       'Total Price'
     ];
     final data = invoice.items.map((item) {
+      final totalExVat = item.unitPrice * item.quantity;
+      final vatAmount = totalExVat * item.vat;
       final total = item.unitPrice * item.quantity * (1 + item.vat);
 
       return [
         item.description,
-        '\$ ${item.unitPrice}',
+        '${item.unitPrice} SAR',
         '${item.quantity}',
-        '${item.TotalExcludingVAT}',
-        '${item.vat} %',
-        '${item.vatAmount}',
-        '\$ ${total.toStringAsFixed(2)}',
+        '${totalExVat} SAR',
+        '${(item.vat * 100).toInt()}%',
+        '${vatAmount.toStringAsFixed(2)}',
+        '${total.toStringAsFixed(2)} SAR',
       ];
     }).toList();
 
@@ -163,7 +165,7 @@ class PdfInvoiceApi {
       headerDecoration: BoxDecoration(color: PdfColors.grey300),
       cellHeight: 30,
       cellAlignments: {
-        0: Alignment.center,
+        0: Alignment.centerLeft,
         1: Alignment.center,
         2: Alignment.center,
         3: Alignment.center,
@@ -194,18 +196,18 @@ class PdfInvoiceApi {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 buildText(
-                  title: 'Net total',
+                  title: 'Total Excl. Vat',
                   value: Utils.formatPrice(netTotal),
                   unite: true,
                 ),
                 buildText(
-                  title: 'Vat ${vatPercent * 100} %',
+                  title: 'Vat ${(vatPercent * 100).toInt()} %',
                   value: Utils.formatPrice(vat),
                   unite: true,
                 ),
                 Divider(),
                 buildText(
-                  title: 'Total amount due',
+                  title: 'Total Inc. Vat',
                   titleStyle: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.bold,
@@ -232,7 +234,7 @@ class PdfInvoiceApi {
           SizedBox(height: 2 * PdfPageFormat.mm),
           buildSimpleText(title: 'Address', value: invoice.supplier.address),
           SizedBox(height: 1 * PdfPageFormat.mm),
-          buildSimpleText(title: 'Paypal', value: invoice.supplier.webSite),
+          buildSimpleText(title: 'Website', value: invoice.supplier.webSite),
         ],
       );
 

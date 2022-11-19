@@ -3,7 +3,7 @@ import '../constants.dart';
 
 class CustomButton extends StatelessWidget {
   final String text;
-  final Function onPressed;
+  final VoidCallback onPressed;
 
   const CustomButton({Key? key, required this.text, required this.onPressed})
       : super(key: key);
@@ -11,23 +11,21 @@ class CustomButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-      onPressed: () {
-        onPressed();
-      },
-      style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.red,
+      style: ButtonStyle(
+          minimumSize: MaterialStateProperty.all(const Size(400, 60)),
+          backgroundColor: MaterialStateProperty.all(Colors.white),
+          overlayColor: MaterialStateProperty.all(Colors.black54),
+          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+              RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15.0),
+                  side: BorderSide(color: Colors.black)))),
+      child: FittedBox(
+        child: Text(
+          text,
+          style: TextStyle(fontSize: 20, color: Colors.black),
+        ),
       ),
-      child: Container(
-          margin: const EdgeInsets.all(0),
-          padding: const EdgeInsets.only(top: 20, bottom: 20),
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-            borderRadius: kBorderRadius,
-            color: kPrimaryColor,
-          ),
-          child: Text(text,
-              style: const TextStyle(
-                  fontSize: 20, color: kBGColor, fontWeight: FontWeight.w600))),
+      onPressed: onPressed,
     );
   }
 }

@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import '../api/pdf_api.dart';
 import '../api/pdf_invoice_api.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import '../model/customer.dart';
+import '../model/buyer.dart';
 import '../model/invoice.dart';
-import '../model/supplier.dart';
-import '../widget/button_widget.dart';
-import '../widget/title_widget.dart';
+import '../model/seller.dart';
+import '../components/button_widget.dart';
+import '../components/title_widget.dart';
+import 'package:invoice/components/custom_button.dart';
 
 class PdfPage extends StatefulWidget {
   static const String id = "pdf_page";
@@ -34,19 +35,20 @@ class _PdfPageState extends State<PdfPage> {
                   text: 'Generate Invoice',
                 ),
                 const SizedBox(height: 48),
-                ButtonWidget(
+                CustomButton(
                   text: 'Invoice PDF',
-                  onClicked: () async {
+                  onPressed: () async {
                     final date = DateTime.now();
 
                     final invoice = Invoice(
-                      supplier: Supplier(
+                      supplier: Seller(
                         name: 'Derwazah',
                         address:
                             'Al Ned Street, Al Zahra, Jeddah 21435, Saudi Arabia',
+                        vatRegistrationNum: 'VAT Number: 310428871100003',
                         webSite: 'https://www.derwaza.tech/',
                       ),
-                      customer: Customer(
+                      customer: Buyer(
                         name: 'Buyer Name: Ali',
                       ),
                       info: InvoiceInfo(
@@ -61,27 +63,18 @@ class _PdfPageState extends State<PdfPage> {
                       items: [
                         InvoiceItem(
                           description: 'Coffee',
-                          unitPrice: 0.99,
-                          quantity: 8,
-                          TotalExcludingVAT: 15,
-                          vat: 0.19,
-                          vatAmount: 10,
+                          unitPrice: 15,
+                          quantity: 3,
                         ),
                         InvoiceItem(
                           description: 'Water',
-                          unitPrice: 0.99,
-                          quantity: 8,
-                          TotalExcludingVAT: 15,
-                          vat: 0.19,
-                          vatAmount: 10,
+                          unitPrice: 2,
+                          quantity: 2,
                         ),
                         InvoiceItem(
-                          description: 'Apple',
-                          unitPrice: 0.99,
-                          quantity: 8,
-                          TotalExcludingVAT: 15,
-                          vat: 0.19,
-                          vatAmount: 10,
+                          description: 'Cookies',
+                          unitPrice: 5,
+                          quantity: 2,
                         ),
                       ],
                     );

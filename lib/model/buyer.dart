@@ -1,7 +1,7 @@
-class Customer {
+class Buyer {
   final String name;
 
-  const Customer({
+  const Buyer({
     required this.name,
   });
 }
