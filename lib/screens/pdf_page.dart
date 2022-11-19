@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../api/pdf_api.dart';
 import '../api/pdf_invoice_api.dart';
-import '../main.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../model/customer.dart';
 import '../model/invoice.dart';
@@ -39,17 +38,16 @@ class _PdfPageState extends State<PdfPage> {
                   text: 'Invoice PDF',
                   onClicked: () async {
                     final date = DateTime.now();
-                  
 
                     final invoice = Invoice(
                       supplier: Supplier(
-                        name: user.email.toString(),
-                        address: 'Sarah Street 9, Beijing, China',
-                        paymentInfo: 'https://paypal.me/sarahfieldzz',
+                        name: 'Derwazah',
+                        address:
+                            'Al Ned Street, Al Zahra, Jeddah 21435, Saudi Arabia',
+                        webSite: 'https://www.derwaza.tech/',
                       ),
                       customer: Customer(
-                        name: 'Apple Inc.',
-                        address: 'Apple Street, Cupertino, CA 95014',
+                        name: 'Buyer Name: Ali',
                       ),
                       info: InvoiceInfo(
                         date: date,
@@ -57,57 +55,33 @@ class _PdfPageState extends State<PdfPage> {
                         vatAmmount: 0,
                         vatRate: 0,
                         description: 'My description...',
-                        serialNumber: '${DateTime.now().millisecondsSinceEpoch}',
+                        serialNumber:
+                            '${DateTime.now().millisecondsSinceEpoch}',
                       ),
                       items: [
                         InvoiceItem(
                           description: 'Coffee',
-                          date: DateTime.now(),
-                          quantity: 3,
+                          unitPrice: 0.99,
+                          quantity: 8,
+                          TotalExcludingVAT: 15,
                           vat: 0.19,
-                          unitPrice: 5.99,
+                          vatAmount: 10,
                         ),
                         InvoiceItem(
                           description: 'Water',
-                          date: DateTime.now(),
-                          quantity: 8,
-                          vat: 0.19,
                           unitPrice: 0.99,
-                        ),
-                        InvoiceItem(
-                          description: 'Orange',
-                          date: DateTime.now(),
-                          quantity: 3,
+                          quantity: 8,
+                          TotalExcludingVAT: 15,
                           vat: 0.19,
-                          unitPrice: 2.99,
+                          vatAmount: 10,
                         ),
                         InvoiceItem(
                           description: 'Apple',
-                          date: DateTime.now(),
-                          quantity: 8,
-                          vat: 0.19,
-                          unitPrice: 3.99,
-                        ),
-                        InvoiceItem(
-                          description: 'Mango',
-                          date: DateTime.now(),
-                          quantity: 1,
-                          vat: 0.19,
-                          unitPrice: 1.59,
-                        ),
-                        InvoiceItem(
-                          description: 'Blue Berries',
-                          date: DateTime.now(),
-                          quantity: 5,
-                          vat: 0.19,
                           unitPrice: 0.99,
-                        ),
-                        InvoiceItem(
-                          description: 'Lemon',
-                          date: DateTime.now(),
-                          quantity: 4,
+                          quantity: 8,
+                          TotalExcludingVAT: 15,
                           vat: 0.19,
-                          unitPrice: 1.29,
+                          vatAmount: 10,
                         ),
                       ],
                     );
@@ -116,7 +90,6 @@ class _PdfPageState extends State<PdfPage> {
 
                     PdfApi.openFile(pdfFile);
                     PdfApi.uploadFile(pdfFile.path.split('/').last, pdfFile);
-                    
                   },
                 ),
               ],

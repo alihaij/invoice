@@ -4,6 +4,7 @@
 
 list(APPEND FLUTTER_PLUGIN_LIST
   modal_progress_hud_nsn
+  printing
   smart_auth
 )
 

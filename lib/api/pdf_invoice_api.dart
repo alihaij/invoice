@@ -1,4 +1,7 @@
 import 'dart:io';
+// import 'package:printing/printing.dart';
+import 'package:printing/printing.dart';
+
 import '../api/pdf_api.dart';
 import '../model/customer.dart';
 import '../model/invoice.dart';
@@ -10,10 +13,15 @@ import 'package:pdf/widgets.dart';
 
 class PdfInvoiceApi {
   static Future<File> generate(Invoice invoice) async {
+    final netImage =
+        await networkImage('https://derwaza.tech/imgs/derwaza-logo.png');
+
     final pdf = Document();
+    print('omk${invoice.info.toString()}');
 
     pdf.addPage(MultiPage(
       build: (context) => [
+        Image(netImage, height: 100, width: 100),
         buildHeader(invoice),
         SizedBox(height: 3 * PdfPageFormat.cm),
         buildTitle(invoice),
@@ -35,15 +43,19 @@ class PdfInvoiceApi {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
+              // buildLogo(),
               buildSupplierAddress(invoice.supplier),
               Container(
                 height: 50,
                 width: 50,
                 child: BarcodeWidget(
                   barcode: Barcode.qrCode(),
-                  data: invoice.info.serialNumber,
+                  data: invoice.info.toString(),
                 ),
               ),
+              // pw.Image(pw.MemoryImage(
+              // (await rootBundle.load('assets/images/logo.png')).buffer.asUint8List(),
+              // )),
             ],
           ),
           SizedBox(height: 1 * PdfPageFormat.cm),
@@ -62,23 +74,17 @@ class PdfInvoiceApi {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(customer.name, style: TextStyle(fontWeight: FontWeight.bold)),
-          Text(customer.address),
         ],
       );
 
   static Widget buildInvoiceInfo(InvoiceInfo info) {
-    // final paymentTerms = '${info.date.difference(info.date).inDays} days';
     final titles = <String>[
       'Invoice Number:',
       'Invoice Date:',
-      // 'Payment Terms:',
-      // 'Due Date:'
     ];
     final data = <String>[
       info.serialNumber,
       Utils.formatDate(info.date),
-      // paymentTerms,
-      // Utils.formatDate(info.date),
     ];
 
     return Column(
@@ -92,9 +98,20 @@ class PdfInvoiceApi {
     );
   }
 
+  // static Future<pw.Widget> buildLogo() async {
+  //   final netImage =
+  //       await networkImage("https://derwaza.tech/imgs/derwaza-logo.png%27");
+  //   ;
+
+  //   return Container(child: pw.Image(netImage));
+  // }
+
   static Widget buildSupplierAddress(Supplier supplier) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // pw.Image(pw.MemoryImage(
+          //   File('images/logo.png').readAsBytesSync(),
+          // )),
           Text(supplier.name, style: TextStyle(fontWeight: FontWeight.bold)),
           SizedBox(height: 1 * PdfPageFormat.mm),
           Text(supplier.address),
@@ -117,21 +134,23 @@ class PdfInvoiceApi {
   static Widget buildInvoice(Invoice invoice) {
     final headers = [
       'Description',
-      'Date',
-      'Quantity',
       'Unit Price',
-      'VAT',
-      'Total'
+      'Quantity',
+      'Total Excl. VAT',
+      'VAT Rate',
+      'VAT Amount',
+      'Total Price'
     ];
     final data = invoice.items.map((item) {
       final total = item.unitPrice * item.quantity * (1 + item.vat);
 
       return [
         item.description,
-        Utils.formatDate(item.date),
-        '${item.quantity}',
         '\$ ${item.unitPrice}',
+        '${item.quantity}',
+        '${item.TotalExcludingVAT}',
         '${item.vat} %',
+        '${item.vatAmount}',
         '\$ ${total.toStringAsFixed(2)}',
       ];
     }).toList();
@@ -140,16 +159,18 @@ class PdfInvoiceApi {
       headers: headers,
       data: data,
       border: null,
-      headerStyle: TextStyle(fontWeight: FontWeight.bold),
+      headerStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 10),
       headerDecoration: BoxDecoration(color: PdfColors.grey300),
       cellHeight: 30,
       cellAlignments: {
-        0: Alignment.centerLeft,
-        1: Alignment.centerRight,
-        2: Alignment.centerRight,
-        3: Alignment.centerRight,
-        4: Alignment.centerRight,
-        5: Alignment.centerRight,
+        0: Alignment.center,
+        1: Alignment.center,
+        2: Alignment.center,
+        3: Alignment.center,
+        4: Alignment.center,
+        5: Alignment.center,
+        6: Alignment.center,
+        7: Alignment.center,
       },
     );
   }
@@ -211,7 +232,7 @@ class PdfInvoiceApi {
           SizedBox(height: 2 * PdfPageFormat.mm),
           buildSimpleText(title: 'Address', value: invoice.supplier.address),
           SizedBox(height: 1 * PdfPageFormat.mm),
-          buildSimpleText(title: 'Paypal', value: invoice.supplier.paymentInfo),
+          buildSimpleText(title: 'Paypal', value: invoice.supplier.webSite),
         ],
       );
 
